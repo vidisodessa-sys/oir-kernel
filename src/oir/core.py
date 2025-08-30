@@ -44,7 +44,7 @@ def phi(u):
 def oir_correlator(axes, eps=0.0, M=10000):
     """
     Orientation Integral Rule (OIR) correlator.
-    
+   
     Parameters
     ----------
     axes : list of np.array
@@ -53,7 +53,7 @@ def oir_correlator(axes, eps=0.0, M=10000):
         Anisotropy parameter (ε).
     M : int
         Number of Monte Carlo samples.
-    
+   
     Returns
     -------
     float : estimated correlator value.
