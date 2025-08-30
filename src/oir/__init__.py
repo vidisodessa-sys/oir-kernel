@@ -3,6 +3,7 @@ from .core import (
     rotate_z_by,
     phi,
     oir_correlator,
+    oir_pair_correlator,
 )
 
 __all__ = [
@@ -10,6 +11,7 @@ __all__ = [
     "rotate_z_by",
     "phi",
     "oir_correlator",
+    "oir_pair_correlator",
 ]
 
 __version__ = "0.1.0"
