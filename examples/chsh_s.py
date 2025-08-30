@@ -1,35 +1,28 @@
 import numpy as np
-from oir import oir_correlator
+from oir import oir_pair_correlator
 
-# Единичные векторы на экваторе (xy-плоскость), угол задаём в радианах
-def axis(theta):
-    return np.array([np.cos(theta), np.sin(theta), 0.0])
+def unit(v):
+    v = np.array(v, dtype=float)
+    return v / np.linalg.norm(v)
 
-# Оптимальные углы для CHSH
-theta_a = 0.0
-theta_ap = np.pi/2
-theta_b = np.pi/4
-theta_bp = -np.pi/4
+# --- Стандартные оси CHSH ---
+a = unit([1, 0, 0])
+ap = unit([0, 1, 0])
+b = unit([1/np.sqrt(2), 1/np.sqrt(2), 0])
+bp = unit([1/np.sqrt(2), -1/np.sqrt(2), 0])
 
-a = axis(theta_a)
-ap = axis(theta_ap)
-b = axis(theta_b)
-bp = axis(theta_bp)
+eps = 0.0 # параметр модуляции
+M = 200_000 # количество выборок Монте-Карло
 
-M = 200000
-eps = 0.0
+Ea_b = oir_pair_correlator(a, b, eps=eps, M=M)
+Ea_bp = oir_pair_correlator(a, bp, eps=eps, M=M)
+Eap_b = oir_pair_correlator(ap, b, eps=eps, M=M)
+Eap_bp = oir_pair_correlator(ap, bp, eps=eps, M=M)
 
-# Корреляторы E(a,b) = ⟨K(a,u)K(b,u)⟩
-Eab = oir_correlator([a, b], eps=eps, M=M)
-Eabp = oir_correlator([a, bp], eps=eps, M=M)
-Eapb = oir_correlator([ap, b], eps=eps, M=M)
-Eapbp = oir_correlator([ap, bp], eps=eps, M=M)
+S = abs(Ea_b - Ea_bp + Eap_b + Eap_bp)
 
-# S = E(a,b) + E(a,b') + E(a',b) - E(a',b')
-S = Eab + Eabp + Eapb - Eapbp
-
-print(f"E(a,b) = {Eab:.6f}")
-print(f"E(a,b') = {Eabp:.6f}")
-print(f"E(a',b) = {Eapb:.6f}")
-print(f"E(a',b') = {Eapbp:.6f}")
-print(f"S ≈ {S:.6f}")
+print(f"E(a,b) = {Ea_b:.6f}")
+print(f"E(a,b') = {Ea_bp:.6f}")
+print(f"E(a',b) = {Eap_b:.6f}")
+print(f"E(a',b') = {Eap_bp:.6f}")
+print(f"S_CHSH = {S:.6f}")
