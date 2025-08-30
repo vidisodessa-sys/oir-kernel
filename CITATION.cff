@@ -1,22 +1,15 @@
 cff-version: 1.2.0
-title: oir-kernel
-message: Please cite this work if you use the OIR computational kernel.
+title: "oir-kernel: Orientation Integral Rule (OIR) computational kernel"
+message: "If you use this software, please cite the following reference."
 type: software
 authors:
   - family-names: Bakhariev
     given-names: Vitalii
-doi: 10.5281/zenodo.16995727
-date-released: 2025-08-29
-version: 0.1.0
+identifiers:
+  - type: doi
+    value: 10.5281/zenodo.16995727
+repository-code: "https://github.com/vidisodessa-sys/oir-kernel"
+version: "0.1.0"
+date-released: "2025-08-29"
 
-.gitignore
 
-__pycache__/
-*.pyc
-*.pyo
-*.DS_Store
-.env
-.venv
-dist/
-build/
-*.egg-info/
