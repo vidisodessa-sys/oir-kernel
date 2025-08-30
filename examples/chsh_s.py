@@ -1,11 +1,11 @@
 import numpy as np
 from oir import oir_correlator
 
-# Single contour on the equator (xy-plane), angle is set in radians
+# Единичные векторы на экваторе (xy-плоскость), угол задаём в радианах
 def axis(theta):
     return np.array([np.cos(theta), np.sin(theta), 0.0])
 
-# Optimal angles for CHSH
+# Оптимальные углы для CHSH
 theta_a = 0.0
 theta_ap = np.pi/2
 theta_b = np.pi/4
@@ -19,7 +19,7 @@ bp = axis(theta_bp)
 M = 200_000
 eps = 0.0
 
-# Correlators E(a,b) = ⟨K(a,u)K(b,u)⟩
+# Корреляторы E(a,b) = ⟨K(a,u)K(b,u)⟩
 Eab = oir_correlator([a, b], eps=eps, M=M)
 Eabp = oir_correlator([a, bp], eps=eps, M=M)
 Eapb = oir_correlator([ap, b], eps=eps, M=M)
