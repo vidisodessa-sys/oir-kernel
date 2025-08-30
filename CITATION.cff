@@ -1,0 +1,22 @@
+cff-version: 1.2.0
+title: oir-kernel
+message: Please cite this work if you use the OIR computational kernel.
+type: software
+authors:
+  - family-names: Bakhariev
+    given-names: Vitalii
+doi: 10.5281/zenodo.16995727
+date-released: 2025-08-29
+version: 0.1.0
+
+.gitignore
+
+__pycache__/
+*.pyc
+*.pyo
+*.DS_Store
+.env
+.venv
+dist/
+build/
+*.egg-info/
