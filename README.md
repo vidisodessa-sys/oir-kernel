@@ -96,6 +96,11 @@ BibTeX:
 
 ---
 
+## Roadmap
+- GHZ examples and benchmarks (equatorial presets, ε-modulation) — planned for v0.2.
+  
+---
+
 ## License
 Article text: CC BY 4.0
 OIR computational kernel: Non-commercial research use only.
