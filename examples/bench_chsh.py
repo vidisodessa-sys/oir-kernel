@@ -5,69 +5,99 @@
 # python -m examples.bench_chsh --preset standard
 # python -m examples.bench_chsh --angles 1,0,0 0,1,0 0.7071,0.7071,0 0.7071,-0.7071,0
 
-import time
+
 import argparse
+import time
 import numpy as np
-from oir import chsh_value
+from oir import oir_pair_correlator
 
-def parse_vec(s: str) -> np.ndarray:
-    x, y, z = map(float, s.split(","))
-    v = np.array([x, y, z], dtype=float)
-    n = np.linalg.norm(v)
-    if n == 0:
-        raise ValueError(f"Zero vector: {s}")
-    return v / n
-
-def get_axes(args):
-    if args.preset == "standard":
-        # Tsirelson-like CHSH set in the xy-plane
-        return [
-            np.array([1, 0, 0]), # a
-            np.array([0, 1, 0]), # a'
-            np.array([1/np.sqrt(2), 1/np.sqrt(2), 0]), # b
-            np.array([1/np.sqrt(2), -1/np.sqrt(2), 0]), # b'
-        ]
-    elif args.angles:
-        if len(args.angles) != 4:
-            raise ValueError("Provide exactly 4 vectors for --angles")
-        return [parse_vec(s) for s in args.angles]
+def rand_n(mode: str) -> np.ndarray:
+    """Random hidden direction n on S2."""
+    if mode == "iso3d":
+        v = np.random.normal(size=3)
+        return v / np.linalg.norm(v)
+    elif mode == "equator":
+        phi = np.random.uniform(0.0, 2*np.pi)
+        return np.array([np.cos(phi), np.sin(phi), 0.0])
     else:
-        # default = standard
-        return [
-            np.array([1, 0, 0]),
-            np.array([0, 1, 0]),
-            np.array([1/np.sqrt(2), 1/np.sqrt(2), 0]),
-            np.array([1/np.sqrt(2), -1/np.sqrt(2), 0]),
-        ]
+        raise ValueError("mode must be iso3d or equator")
 
-def run_once(axes, eps, M, mode):
-    t0 = time.perf_counter()
-    S = chsh_value(axes, eps=eps, M=M, mode=mode)
-    dt = time.perf_counter() - t0
-    return S, dt
+def E_pair(a, b, M, eps, mode):
+    acc = 0.0
+    for _ in range(M):
+        n = rand_n(mode)
+        Ka = 2.0*(np.dot(a, n)**2) - 1.0
+        Kb = 2.0*(np.dot(b, n)**2) - 1.0
+        # eps-модуляция: в бенчмарке выключаем (eps=0)
+        acc += Ka*Kb
+    return acc / M
+
+def chsh_S(M: int, eps: float, mode: str):
+    # Оптимальные плоскостные направления (все в XY):
+    a = np.array([1.0, 0.0, 0.0]) # 0°
+    ap = np.array([0.0, 1.0, 0.0]) # 90°
+    b = np.array([1/np.sqrt(2), 1/np.sqrt(2), 0.0]) # +45°
+    bp = np.array([1/np.sqrt(2), -1/np.sqrt(2), 0.0]) # -45°
+
+    Eab = E_pair(a, b, M, eps, mode)
+    Eabp = E_pair(a, bp, M, eps, mode)
+    Eapb = E_pair(ap, b, M, eps, mode)
+    Eapbp= E_pair(ap, bp, M, eps, mode)
+
+    S = abs(Eab + Eabp + Eapb - Eapbp)
+    return S, (Eab, Eabp, Eapb, Eapbp)
+
+def run(mode: str, M: int, eps: float, repeats: int):
+    t0 = time.time()
+    Ss = []
+    for _ in range(repeats):
+        S, _ = chsh_S(M, eps, mode)
+        Ss.append(S)
+    t1 = time.time()
+    Ss = np.array(Ss)
+    print(f"\nMode: {mode}")
+    print(f"eps = {eps}, M = {M}, repeats = {repeats}")
+    print(f"S (mean) = {Ss.mean():.6f} (std {Ss.std(ddof=1):.6f})")
+    print(f"S/4 = {Ss.mean()/4:.6f} (для сравнения с прежним “S mean”)")
+    print(f"time = {(t1-t0)/repeats:.3f}s per run")
+
+if __name__ == "__main__":
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--mode", choices=["iso3d","equator"], default="iso3d")
+    ap.add_argument("--M", type=int, default=20000)
+    ap.add_argument("--eps", type=float, default=0.0)
+    ap.add_argument("--repeats", type=int, default=3)
+    args = ap.parse_args()
+    run(args.mode, args.M, args.eps, args.repeats)
+
+И маленький тестовый скрипт (если хочешь посмотреть сами E-пары), обнови examples/chsh_s.py:
+
+# examples/chsh_s.py
+import numpy as np
+from oir import oir_pair_correlator # не обязателен здесь
+from bench_chsh import E_pair # используем ту же реализацию
+from bench_chsh import rand_n # для единообразия
 
 def main():
-    p = argparse.ArgumentParser(description="OIR CHSH benchmark")
-    p.add_argument("--M", type=int, default=20000, help="Monte Carlo samples")
-    p.add_argument("--eps", type=float, default=0.0, help="anisotropy ε")
-    p.add_argument("--repeats", type=int, default=3, help="repetitions per mode")
-    p.add_argument("--preset", choices=["standard"], default="standard",
-                   help="angle preset (standard = typical CHSH optimal set)")
-    p.add_argument("--angles", nargs="+",
-                   help="override axes with 4 vectors 'x,y,z' ... (exactly 4)")
-    args = p.parse_args()
+    M = 20000
+    mode = "equator" # или "iso3d"
 
-    axes = get_axes(args)
+    a = np.array([1.0, 0.0, 0.0])
+    ap = np.array([0.0, 1.0, 0.0])
+    b = np.array([1/np.sqrt(2), 1/np.sqrt(2), 0.0])
+    bp = np.array([1/np.sqrt(2), -1/np.sqrt(2), 0.0])
 
-    for mode in ["iso3d", "equator"]:
-        Ss, Ts = [], []
-        for _ in range(args.repeats):
-            S, dt = run_once(axes, args.eps, args.M, mode)
-            Ss.append(S); Ts.append(dt)
-        print(f"\nMode: {mode}")
-        print(f" eps = {args.eps}, M = {args.M}, repeats = {args.repeats}")
-        print(f" S mean = {np.mean(Ss):.6f} (std {np.std(Ss):.6f})")
-        print(f" time = {np.mean(Ts):.3f}s per run")
+    Eab = E_pair(a, b, M, 0.0, mode)
+    Eabp = E_pair(a, bp, M, 0.0, mode)
+    Eapb = E_pair(ap, b, M, 0.0, mode)
+    Eapbp= E_pair(ap, bp, M, 0.0, mode)
+
+    S = abs(Eab + Eabp + Eapb - Eapbp)
+    print(f"E(a,b) = {Eab:.6f}")
+    print(f"E(a,b') = {Eabp:.6f}")
+    print(f"E(a',b) = {Eapb:.6f}")
+    print(f"E(a',b') = {Eapbp:.6f}")
+    print(f"S_CHSH = {S:.6f}")
 
 if __name__ == "__main__":
     main()
