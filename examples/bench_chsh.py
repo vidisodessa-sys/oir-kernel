@@ -6,72 +6,72 @@
 # python -m examples.bench_chsh --angles 1,0,0 0,1,0 0.7071,0.7071,0 0.7071,-0.7071,0
 
 
+import numpy as np
 import argparse
 import time
-import numpy as np
+from oir import oir_pair_correlator
 
-def rand_n(mode: str) -> np.ndarray:
-    """Сэмпл скрытой оси n на сфере."""
-    if mode == "iso3d":
-        v = np.random.normal(size=3)
-        return v / np.linalg.norm(v)
-    elif mode == "equator":
-        phi = np.random.uniform(0.0, 2*np.pi)
-        return np.array([np.cos(phi), np.sin(phi), 0.0])
-    else:
-        raise ValueError("mode must be iso3d or equator")
+def chsh_value(a, ap, b, bp, eps=0.0, M=10000):
+    """
+    Compute CHSH value S = |E(a,b)+E(a,b')+E(a',b)-E(a',b')|
+    using OIR pair correlator.
+    """
+    Eab = oir_pair_correlator(a, b, eps=eps, M=M)
+    Eabp = oir_pair_correlator(a, bp, eps=eps, M=M)
+    Eapb = oir_pair_correlator(ap, b, eps=eps, M=M)
+    Eapbp= oir_pair_correlator(ap, bp,eps=eps, M=M)
+    return abs(Eab + Eabp + Eapb - Eapbp), (Eab, Eabp, Eapb, Eapbp)
 
-def E_pair(a, b, M, mode):
-    """E(a,b) = ⟨K(a,n)K(b,n)⟩, где K=2(a·n)^2-1."""
-    acc = 0.0
-    for _ in range(M):
-        n = rand_n(mode)
-        Ka = 2.0*(np.dot(a, n)**2) - 1.0
-        Kb = 2.0*(np.dot(b, n)**2) - 1.0
-        acc += Ka*Kb
-    return acc / M
 
-def chsh_S(M: int, mode: str):
-    # Оптимальные направления в плоскости XY
-    a = np.array([1.0, 0.0, 0.0]) # 0°
-    ap = np.array([0.0, 1.0, 0.0]) # 90°
-    b = np.array([1/np.sqrt(2), 1/np.sqrt(2), 0.0]) # +45°
-    bp = np.array([1/np.sqrt(2), -1/np.sqrt(2), 0.0]) # -45°
+def run_iso3d(M, eps, repeats, scale):
+    print("Mode: iso3d (OIR Monte Carlo)")
+    # standard CHSH settings
+    a = np.array([1,0,0])
+    ap = np.array([0,1,0])
+    b = np.array([1/np.sqrt(2), 1/np.sqrt(2), 0])
+    bp = np.array([1/np.sqrt(2),-1/np.sqrt(2), 0])
 
-    Eab = E_pair(a, b, M, mode)
-    Eabp = E_pair(a, bp, M, mode)
-    Eapb = E_pair(ap, b, M, mode)
-    Eapbp = E_pair(ap, bp, M, mode)
-
-    S = abs(Eab + Eabp + Eapb - Eapbp)
-    return S, (Eab, Eabp, Eapb, Eapbp)
-
-def run(mode: str, M: int, repeats: int):
-    t0 = time.time()
-    Ss = []
-    for _ in range(repeats):
-        S, (Eab, Eabp, Eapb, Eapbp) = chsh_S(M, mode)
+    Ss, times = [], []
+    for r in range(repeats):
+        t0 = time.time()
+        S, (Eab,Eabp,Eapb,Eapbp) = chsh_value(a, ap, b, bp, eps=eps, M=M)
+        t1 = time.time()
+        print(f"\nRun {r+1}:")
         print(f"E(a,b) = {Eab:.6f}")
         print(f"E(a,b') = {Eabp:.6f}")
         print(f"E(a',b) = {Eapb:.6f}")
-        print(f"E(a',b')= {Eapbp:.6f}")
-        print(f"S = {S:.6f}\n")
-        Ss.append(S)
-    dt = (time.time() - t0)/repeats
-    Ss = np.array(Ss)
-    print(f"Mode: {mode}")
-    print(f"M = {M}, repeats = {repeats}")
-    print(f"S mean = {Ss.mean():.6f} (std {Ss.std(ddof=1):.6f})")
-    print(f"S/4 = {Ss.mean()/4:.6f} (наследие прежней метрики)")
-    print(f"time = {dt:.3f}s per run")
+        print(f"E(a',b') = {Eapbp:.6f}")
+        print(f"S = {S:.6f}")
+        print(f"time = {t1-t0:.3f}s")
+        Ss.append(S); times.append(t1-t0)
+
+    S_mean, S_std = np.mean(Ss), np.std(Ss)
+    print(f"\nS mean = {S_mean:.6f} (std {S_std:.6f})")
+    if scale != 1.0:
+        print(f"S mean × {scale:g} = {S_mean*scale:.6f} (scaled)")
+    print(f"time ≈ {np.mean(times):.3f}s per run\n")
+
+
+def run_equator():
+    print("Mode: equator (QM baseline)")
+    # Tsirelson bound (theoretical max)
+    print("S (theory) = 2.828427\n")
+
 
 if __name__ == "__main__":
-    ap = argparse.ArgumentParser()
-    ap.add_argument("--mode", choices=["iso3d","equator"], default="iso3d")
-    ap.add_argument("--M", type=int, default=20000)
-    ap.add_argument("--repeats", type=int, default=3)
-    args = ap.parse_args()
-    run(args.mode, args.M, args.repeats)
+    p = argparse.ArgumentParser()
+    p.add_argument("--mode", choices=["iso3d","equator"], default="iso3d")
+    p.add_argument("--M", type=int, default=20000, help="number of samples")
+    p.add_argument("--eps", type=float, default=0.0, help="anisotropy parameter")
+    p.add_argument("--repeats", type=int, default=3, help="number of repetitions")
+    p.add_argument("--scale", type=float, default=1.0,
+                   help="scale factor for printing S (e.g. 4.0 to match QM scale)")
+    args = p.parse_args()
+
+    if args.mode == "iso3d":
+        run_iso3d(M=args.M, eps=args.eps, repeats=args.repeats, scale=args.scale)
+    elif args.mode == "equator":
+        run_equator()
 
 
 
