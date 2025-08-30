@@ -69,3 +69,11 @@ def oir_correlator(axes, eps=0.0, M=10000):
         w = 1 + (eps**2) * phi(u) # modulation
         acc += w * val
     return acc / M
+__all__ = ["oir_correlator", "haar_sample_su2", "rotate_z_by", "phi"]
+
+src/oir/__init__.py
+
+from .core import oir_correlator, haar_sample_su2, rotate_z_by, phi
+
+__all__ = ["oir_correlator", "haar_sample_su2", "rotate_z_by", "phi"]
+__version__ = "0.1.0"
