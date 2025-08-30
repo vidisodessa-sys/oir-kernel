@@ -69,4 +69,17 @@ def oir_correlator(axes, eps=0.0, M=10000):
         w = 1 + (eps**2) * phi(u) # modulation
         acc += w * val
     return acc / M
+    def oir_pair_correlator(a, b, eps=0.0, M=10000):
+    """
+    two point correlator E(a,b).
+    """
+    acc = 0.0
+    for _ in range(M):
+        u = haar_sample_su2()
+        n = rotate_z_by(u)
+        Ka = 2*(np.dot(a,n)**2) - 1
+        Kb = 2*(np.dot(b,n)**2) - 1
+        w = 1.0 + (eps**2)*phi(u)
+        acc += w * Ka * Kb
+    return acc / M
 
