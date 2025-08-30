@@ -1,5 +1,5 @@
 import numpy as np
-from oir_core import oir_correlator
+from oir import oir_correlator
 
 """
 Example: CHSH correlator using the Orientation Integral Rule (OIR).
