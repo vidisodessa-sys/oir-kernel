@@ -50,6 +50,17 @@ axes = [
 value = oir_correlator(axes, eps=0.0, M=100000)
 print("CHSH correlator:", value)
 ```
+## Command-line (CLI)
+After `pip install -e .`, a command `oir` is available:
+
+```bash
+# CHSH preset
+oir --preset chsh --eps 0.0 -M 100000
+
+# From file (CSV or JSON)
+oir --axes-file axes.csv --eps 0.01 -M 200000
+```
+
 ## Citation
 If you use this code, please cite:
 
