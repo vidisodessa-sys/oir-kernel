@@ -28,12 +28,14 @@ Clone the repository:
 ```bash
 git clone https://github.com/vidisodessa-sys/oir-kernel.git
 cd oir-kernel
-pip install -r requirements.txt```
+pip install -r requirements.txt
+```
 
 ## Usage
 
 Example: compute a CHSH correlator with OIR.
 
+```python
 from oir_core import oir_correlator
 import numpy as np
 
@@ -47,7 +49,7 @@ axes = [
 
 value = oir_correlator(axes, eps=0.0, M=100000)
 print("CHSH correlator:", value)
-
+```
 ## Citation
 If you use this code, please cite:
 
