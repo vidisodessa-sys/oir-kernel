@@ -17,7 +17,7 @@ as described in:
 ---
 
 ## Contents
-- `oir_core.py` — core implementation of OIR kernel  
+- `src/oir_core.py` — core implementation of OIR kernel  
 - `examples/` — demo scripts (e.g., CHSH, GHZ correlations)  
 - `requirements.txt` — Python dependencies
 
