@@ -72,12 +72,4 @@ def main():
 if __name__ == "__main__":
     main()
 
-Запуск из корня репозитория:
 
-python -m examples.bench_chsh --M 20000 --eps 0.0 --repeats 3
-
-Ожидаемо:
-
-Mode: iso3d → S ≈ 0.67
-
-Mode: equator → S ≈ 2.82 при eps=0.0
