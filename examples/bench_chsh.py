@@ -70,36 +70,5 @@ if __name__ == "__main__":
     args = ap.parse_args()
     run(args.mode, args.M, args.eps, args.repeats)
 
-И маленький тестовый скрипт (если хочешь посмотреть сами E-пары), обнови examples/chsh_s.py:
-
-# examples/chsh_s.py
-import numpy as np
-from oir import oir_pair_correlator # не обязателен здесь
-from bench_chsh import E_pair # используем ту же реализацию
-from bench_chsh import rand_n # для единообразия
-
-def main():
-    M = 20000
-    mode = "equator" # или "iso3d"
-
-    a = np.array([1.0, 0.0, 0.0])
-    ap = np.array([0.0, 1.0, 0.0])
-    b = np.array([1/np.sqrt(2), 1/np.sqrt(2), 0.0])
-    bp = np.array([1/np.sqrt(2), -1/np.sqrt(2), 0.0])
-
-    Eab = E_pair(a, b, M, 0.0, mode)
-    Eabp = E_pair(a, bp, M, 0.0, mode)
-    Eapb = E_pair(ap, b, M, 0.0, mode)
-    Eapbp= E_pair(ap, bp, M, 0.0, mode)
-
-    S = abs(Eab + Eabp + Eapb - Eapbp)
-    print(f"E(a,b) = {Eab:.6f}")
-    print(f"E(a,b') = {Eabp:.6f}")
-    print(f"E(a',b) = {Eapb:.6f}")
-    print(f"E(a',b') = {Eapbp:.6f}")
-    print(f"S_CHSH = {S:.6f}")
-
-if __name__ == "__main__":
-    main()
 
 
