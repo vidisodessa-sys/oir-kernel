@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools>=69", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "oir-kernel"
+version = "0.1.0"
+description = "Orientation Integral Rule (OIR) computational kernel"
+readme = "README.md"
+authors = [{ name = "Vitalii Bakhariev", email = "vidisodessa@gmail.com" }]
+license = { text = "Non-commercial research use only. Copyright (c) 2025 Vitalii Bakhariev" }
+requires-python = ">=3.9"
+dependencies = [
+    "numpy>=1.24"
+]
+
+[project.urls]
+Homepage = "https://github.com/vidisodessa-sys/oir-kernel"
+Repository = "https://github.com/vidisodessa-sys/oir-kernel"
+Documentation = "https://doi.org/10.5281/zenodo.16995727"
+
+[project.scripts]
+oir = "oir.cli:main"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
