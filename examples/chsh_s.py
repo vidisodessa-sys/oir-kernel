@@ -16,7 +16,7 @@ ap = axis(theta_ap)
 b = axis(theta_b)
 bp = axis(theta_bp)
 
-M = 200_000
+M = 200000
 eps = 0.0
 
 # Корреляторы E(a,b) = ⟨K(a,u)K(b,u)⟩
