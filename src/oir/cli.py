@@ -1,43 +1,74 @@
 import argparse
+import json
+import sys
+from pathlib import Path
 import numpy as np
+
 from .core import oir_correlator
 
-def parse_axes(name: str):
+PRESETS = {
+    # CHSH (четыре направления в плоскости x–y)
+    "chsh": [
+        [1.0, 0.0, 0.0],
+        [0.0, 1.0, 0.0],
+        [1/np.sqrt(2), 1/np.sqrt(2), 0.0],
+        [1/np.sqrt(2), -1/np.sqrt(2), 0.0],
+    ],
+    # GHZ три анализатора 120° на окружности (пример)
+    "ghz": [
+        [1.0, 0.0, 0.0],
+        [-0.5, np.sqrt(3)/2, 0.0],
+        [-0.5, -np.sqrt(3)/2, 0.0],
+    ],
+}
+
+def load_axes(path: Path):
     """
-    Примеры форматов:
-      --axes "1,0,0; 0,1,0; 0.707,0.707,0; 0.707,-0.707,0"
-      --axes-file axes.txt (по одному вектору в строке, через запятую)
+    Загружает векторы-анализаторы из файла:
+    - CSV: три столбца x,y,z без заголовка
+    - JSON: список списков [[x,y,z], ...]
     """
-    vecs = []
-    for part in name.split(";"):
-        part = part.strip()
-        if not part:
-            continue
-        x, y, z = map(float, part.split(","))
-        v = np.array([x, y, z], dtype=float)
-        v = v / np.linalg.norm(v)
-        vecs.append(v)
-    return vecs
+    p = Path(path)
+    if not p.exists():
+        raise FileNotFoundError(p)
 
-def main():
-    p = argparse.ArgumentParser(prog="oir", description="OIR kernel CLI")
-    sub = p.add_subparsers(dest="cmd", required=True)
+    if p.suffix.lower() == ".csv":
+        data = []
+        for line in p.read_text().strip().splitlines():
+            parts = [float(t) for t in line.replace(";", ",").split(",")[:3]]
+            data.append(parts)
+        return data
+    elif p.suffix.lower() == ".json":
+        return json.loads(p.read_text())
+    else:
+        raise ValueError("Unsupported file format (use .csv or .json)")
 
-    chsh = sub.add_parser("chsh", help="Compute CHSH-like correlator from 4 axes")
-    chsh.add_argument("--axes", type=str,
-                      default="1,0,0; 0,1,0; 0.70710678,0.70710678,0; 0.70710678,-0.70710678,0",
-                      help="4 unit vectors as 'x,y,z; ...'")
-    chsh.add_argument("--eps", type=float, default=0.0, help="anisotropy ε")
-    chsh.add_argument("--samples", type=int, default=100000, help="Monte Carlo samples M")
+def main(argv=None):
+    parser = argparse.ArgumentParser(
+        prog="oir",
+        description="OIR CLI — вычисление корреляторов Orientation Integral Rule",
+    )
+    g = parser.add_mutually_exclusive_group(required=True)
+    g.add_argument("--preset", choices=sorted(PRESETS.keys()),
+                   help="готовый набор направлений (chsh, ghz)")
+    g.add_argument("--axes-file", type=str,
+                   help="путь к CSV/JSON с векторами (по одному в строке)")
 
-    args = p.parse_args()
+    parser.add_argument("--eps", type=float, default=0.0,
+                        help="анизотропия ε (по умолчанию 0.0)")
+    parser.add_argument("-M", type=int, default=100000,
+                        help="число сэмплов Монте-Карло (по умолчанию 100000)")
+    args = parser.parse_args(argv)
 
-    if args.cmd == "chsh":
-        axes = parse_axes(args.axes)
-        if len(axes) != 4:
-            raise SystemExit("Need exactly 4 axes for CHSH")
-        val = oir_correlator(axes, eps=args.eps, M=args.samples)
-        print(f"CHSH correlator: {val:.9f}")
+    if args.preset:
+        axes = PRESETS[args.preset]
+    else:
+        axes = load_axes(Path(args.axes_file))
+
+    axes_np = [np.array(v, dtype=float) for v in axes]
+    val = oir_correlator(axes_np, eps=args.eps, M=args.M)
+    print(f"axes={len(axes_np)}, eps={args.eps}, M={args.M}")
+    print(f"OIR correlator: {val:.12f}")
 
 if __name__ == "__main__":
     main()
