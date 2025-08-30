@@ -28,9 +28,9 @@ Clone the repository:
 ```bash
 git clone https://github.com/vidisodessa-sys/oir-kernel.git
 cd oir-kernel
-pip install -r requirements.txt
+pip install -r requirements.txt```
 
-##Usage
+## Usage
 
 Example: compute a CHSH correlator with OIR.
 
