@@ -30,7 +30,7 @@ git clone https://github.com/vidisodessa-sys/oir-kernel.git
 cd oir-kernel
 pip install -r requirements.txt
 
-Usage
+##Usage
 
 Example: compute a CHSH correlator with OIR.
 
@@ -48,7 +48,7 @@ axes = [
 value = oir_correlator(axes, eps=0.0, M=100000)
 print("CHSH correlator:", value)
 
-🔹 Citation
+## Citation
 If you use this code, please cite:
 
 Vitalii Bakhariev (2025).
@@ -66,7 +66,7 @@ BibTeX:
   doi          = {10.5281/zenodo.16995727},
   url          = {https://doi.org/10.5281/zenodo.16995727}
 }
-🔹 License
+## License
 Article text: CC BY 4.0
 OIR computational kernel: Non-commercial research use only.
 Any commercial or industrial use requires explicit written permission from the author.
