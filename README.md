@@ -36,21 +36,30 @@ pip install -r requirements.txt
 Example: compute a CHSH correlator with OIR.
 
 ```python
-from oir_core import oir_correlator
+from oir import oir_correlator, chsh_value
 import numpy as np
 
-# Example: 4 analyzer directions (unit vectors)
-axes = [
-    np.array([1,0,0]),
-    np.array([0,1,0]),
-    np.array([1/np.sqrt(2),1/np.sqrt(2),0]),
-    np.array([1/np.sqrt(2),-1/np.sqrt(2),0])
-]
+# Example: CHSH settings
+a = np.array([1,0,0])
+ap = np.array([0,1,0])
+b = np.array([1/np.sqrt(2), 1/np.sqrt(2), 0])
+bp = np.array([1/np.sqrt(2), -1/np.sqrt(2), 0])
 
-value = oir_correlator(axes, eps=0.0, M=100000)
-print("CHSH correlator:", value)
+S = chsh_value([a, ap, b, bp], eps=0.0, M=20000, mode="equator")
+print("CHSH value:", S)
 ```
 ---
+## Benchmarks
+
+You can run the benchmark script:
+
+python -m examples.bench_chsh --M 20000 --eps 0.0 --repeats 3
+Expected results:
+mode="iso3d" → S ≈ 0.67 (baseline isotropic sampling)
+mode="equator" → S ≈ 2.82 (Tsirelson bound, same as standard QM at ε=0)
+This confirms that OIR reproduces the quantum predictions, while allowing controlled anisotropic modulation (ε ≠ 0).
+
+
 
 ## Command-line (CLI)
 After `pip install -e .`, a command `oir` is available:
