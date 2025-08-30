@@ -30,7 +30,7 @@ git clone https://github.com/vidisodessa-sys/oir-kernel.git
 cd oir-kernel
 pip install -r requirements.txt
 ```
-
+---
 ## Usage
 
 Example: compute a CHSH correlator with OIR.
@@ -50,6 +50,8 @@ axes = [
 value = oir_correlator(axes, eps=0.0, M=100000)
 print("CHSH correlator:", value)
 ```
+---
+
 ## Command-line (CLI)
 After `pip install -e .`, a command `oir` is available:
 
@@ -60,6 +62,7 @@ oir --preset chsh --eps 0.0 -M 100000
 # From file (CSV or JSON)
 oir --axes-file axes.csv --eps 0.01 -M 200000
 ```
+---
 
 ## Citation
 If you use this code, please cite:
@@ -67,6 +70,8 @@ If you use this code, please cite:
 Vitalii Bakhariev (2025).
 The Orientation Integral Rule (OIR): A Geometric Alternative to the Born Rule with Practical Computational Advantages.
 Zenodo. DOI: 10.5281/zenodo.16995727
+
+---
 
 BibTeX:
 
@@ -79,6 +84,8 @@ BibTeX:
   doi          = {10.5281/zenodo.16995727},
   url          = {https://doi.org/10.5281/zenodo.16995727}
 }
+
+---
 
 ## License
 Article text: CC BY 4.0
