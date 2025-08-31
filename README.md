@@ -56,18 +56,16 @@ Run a single CHSH computation with OIR and print both raw and rescaled (QM units
 ```bash
 python -m examples.chsh_test
 ```
-
 Example output:
-
 S_raw = 0.676842
 S_rescaled = 2.707368 (QM units)
 
 ### CHSH (full S from four correlators)
-
 Compute all four correlators and assemble CHSH S; print raw and rescaled.
+```bash
 python -m examples.chsh_s
+```
 Example output:
-
 CHSH test (OIR kernel)
 E(a,b) = 0.338921
 E(a,b') = 0.341057
@@ -86,7 +84,6 @@ Run:
 ```bash
 python -m examples.ghz_test
 ```
-
 Example output:
 GHZ test (OIR kernel)
 Axes: [1. 0. 0.], [-0.5 0.8660254 0. ], [-0.5 -0.8660254 0. ]
