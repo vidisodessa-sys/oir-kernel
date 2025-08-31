@@ -55,12 +55,13 @@ Run a single CHSH computation with OIR and print both raw and rescaled (QM units
 
 ```bash
 python -m examples.chsh_test
+```
 
 Example output:
 
 S_raw = 0.676842
 S_rescaled = 2.707368 (QM units)
-```
+
 ### CHSH (full S from four correlators)
 
 Compute all four correlators and assemble CHSH S; print raw and rescaled.
@@ -106,7 +107,7 @@ Run the benchmark from the repository root:
 ```bash
 python -m examples.bench_chsh --mode equator # QM (theoretical baseline)
 python -m examples.bench_chsh --mode iso3d # OIR Monte Carlo
-
+```
 Example output (iso3d):
 Mode: iso3d (OIR Monte Carlo)
 M = 20000, repeats = 3
@@ -123,7 +124,7 @@ Mode: equator (QM baseline)
 
 S (theory) = 2.828427  
 time = 0.000s
-```
+
 ## Scaling note
 
 The raw OIR kernel produces correlators in the correct range **[-1, 1]**,  
