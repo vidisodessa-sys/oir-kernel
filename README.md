@@ -29,6 +29,7 @@ Clone the repository:
 git clone https://github.com/vidisodessa-sys/oir-kernel.git
 cd oir-kernel
 pip install -r requirements.txt
+pip install -e .
 ```
 ---
 ## Usage
