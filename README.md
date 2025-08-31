@@ -59,15 +59,20 @@ Run the benchmark from the repository root:
 python -m examples.bench_chsh --mode equator # QM (theoretical baseline)
 python -m examples.bench_chsh --mode iso3d # OIR Monte Carlo
 
-Example results
-
 Mode: iso3d (OIR Monte Carlo)
 M = 20000, repeats = 3
-S ≈ 0.67 ± 0.01
-time ≈ 4s per run
+
+Run 1: S_raw = 0.673590, S_rescaled = 2.694358, time = 3.911s  
+Run 2: S_raw = 0.676999, S_rescaled = 2.707996, time = 3.960s  
+Run 3: S_raw = 0.679678, S_rescaled = 2.718711, time = 3.953s  
+
+S_raw mean = 0.676755 (std 0.002491)  
+S_rescaled mean = 2.707022 (std 0.009966)  
+avg time ≈ 3.94s per run
 
 Mode: equator (QM baseline)
-S (theory) = 2.828427
+
+S (theory) = 2.828427  
 time = 0.000s
 ```
 ## Scaling note
