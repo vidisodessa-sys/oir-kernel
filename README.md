@@ -89,6 +89,12 @@ against standard quantum mechanical conventions, a factor ×4 is applied:
 
 This rescaling is **not part of the physics**, only a convention to align OIR outputs with QM-style benchmarks.
 
+## Note on statistics:
+- `mean` = average value over several runs.  
+- `std` = standard deviation, a measure of fluctuations between runs.  
+  A small `std` (e.g. ±0.01) means the Monte Carlo estimate is stable;  
+  a larger `std` would indicate more noise or the need for higher `M`.
+
 ---
 
 ## Command-line (CLI)
