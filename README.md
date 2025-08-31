@@ -66,6 +66,7 @@ Compute all four correlators and assemble CHSH S; print raw and rescaled.
 python -m examples.chsh_s
 ```
 Example output:
+```bash
 CHSH test (OIR kernel)
 E(a,b) = 0.338921
 E(a,b') = 0.341057
@@ -74,7 +75,7 @@ E(a',b') = 0.336997
 ----------------------------------------
 S_raw = 0.678855
 S_rescaled = 2.715418 (QM units)
-
+```
 
 ---
 ## GHZ test (3-party correlator)
@@ -85,11 +86,13 @@ Run:
 python -m examples.ghz_test
 ```
 Example output:
+```bash
 GHZ test (OIR kernel)
 Axes: [1. 0. 0.], [-0.5 0.8660254 0. ], [-0.5 -0.8660254 0. ]
 ----------------------------------------
 E_raw = -0.229421
 E_rescaled = -0.917683 (QM units, optional ×4 scaling)
+```
 
 Notes:
 For GHZ, the raw OIR value already lies in the natural range [-1,+1], just like in standard QM.
