@@ -6,72 +6,54 @@
 # python -m examples.bench_chsh --angles 1,0,0 0,1,0 0.7071,0.7071,0 0.7071,-0.7071,0
 
 
-import numpy as np
 import argparse
-import time
-from oir import oir_pair_correlator
+import numpy as np
+from src.oir.core import oir_pair_correlator
 
-def chsh_value(a, ap, b, bp, eps=0.0, M=10000):
-    """
-    Compute CHSH value S = |E(a,b)+E(a,b')+E(a',b)-E(a',b')|
-    using OIR pair correlator.
-    """
-    Eab = oir_pair_correlator(a, b, eps=eps, M=M)
-    Eabp = oir_pair_correlator(a, bp, eps=eps, M=M)
-    Eapb = oir_pair_correlator(ap, b, eps=eps, M=M)
-    Eapbp= oir_pair_correlator(ap, bp,eps=eps, M=M)
-    return abs(Eab + Eabp + Eapb - Eapbp), (Eab, Eabp, Eapb, Eapbp)
-
-
-def run_iso3d(M, eps, repeats, scale):
-    print("Mode: iso3d (OIR Monte Carlo)")
-    # standard CHSH settings
-    a = np.array([1,0,0])
-    ap = np.array([0,1,0])
+def run_chsh(mode="iso3d", M=20000, repeats=3, eps=0.0):
+    # Standard CHSH directions
+    a = np.array([1, 0, 0])
+    a_ = np.array([0, 1, 0])
     b = np.array([1/np.sqrt(2), 1/np.sqrt(2), 0])
-    bp = np.array([1/np.sqrt(2),-1/np.sqrt(2), 0])
+    b_ = np.array([1/np.sqrt(2), -1/np.sqrt(2), 0])
 
-    Ss, times = [], []
-    for r in range(repeats):
-        t0 = time.time()
-        S, (Eab,Eabp,Eapb,Eapbp) = chsh_value(a, ap, b, bp, eps=eps, M=M)
-        t1 = time.time()
-        print(f"\nRun {r+1}:")
-        print(f"E(a,b) = {Eab:.6f}")
-        print(f"E(a,b') = {Eabp:.6f}")
-        print(f"E(a',b) = {Eapb:.6f}")
-        print(f"E(a',b') = {Eapbp:.6f}")
-        print(f"S = {S:.6f}")
-        print(f"time = {t1-t0:.3f}s")
-        Ss.append(S); times.append(t1-t0)
+    results = []
+    for _ in range(repeats):
+        if mode == "iso3d":
+            Eab = oir_pair_correlator(a, b, eps=eps, M=M)
+            Eab_ = oir_pair_correlator(a, b_, eps=eps, M=M)
+            Ea_b = oir_pair_correlator(a_, b, eps=eps, M=M)
+            Ea_b_= oir_pair_correlator(a_, b_,eps=eps, M=M)
 
-    S_mean, S_std = np.mean(Ss), np.std(Ss)
-    print(f"\nS mean = {S_mean:.6f} (std {S_std:.6f})")
-    if scale != 1.0:
-        print(f"S mean × {scale:g} = {S_mean*scale:.6f} (scaled)")
-    print(f"time ≈ {np.mean(times):.3f}s per run\n")
+            S = abs(Eab + Eab_ + Ea_b - Ea_b_)
+        elif mode == "equator":
+            # QM baseline (theoretical)
+            S = 2*np.sqrt(2)
+        else:
+            raise ValueError("Mode must be iso3d or equator")
+        results.append(S)
 
+    S_raw = np.mean(results)
+    S_std = np.std(results)
 
-def run_equator():
-    print("Mode: equator (QM baseline)")
-    # Tsirelson bound (theoretical max)
-    print("S (theory) = 2.828427\n")
+    # Apply rescaling for comparison
+    S_rescaled = 4 * S_raw
 
+    print(f"Mode: {mode}")
+    print(f"Raw S = {S_raw:.6f} ± {S_std:.6f}")
+    print(f"Rescaled S (QM units) ≈ {S_rescaled:.6f}")
+    if mode == "equator":
+        print(f"(Tsirelson bound) = {2*np.sqrt(2):.6f}")
 
 if __name__ == "__main__":
-    p = argparse.ArgumentParser()
-    p.add_argument("--mode", choices=["iso3d","equator"], default="iso3d")
-    p.add_argument("--M", type=int, default=20000, help="number of samples")
-    p.add_argument("--eps", type=float, default=0.0, help="anisotropy parameter")
-    p.add_argument("--repeats", type=int, default=3, help="number of repetitions")
-    p.add_argument("--scale", type=float, default=1.0,
-                   help="scale factor for printing S (e.g. 4.0 to match QM scale)")
-    args = p.parse_args()
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--mode", choices=["iso3d", "equator"], default="iso3d")
+    parser.add_argument("-M", type=int, default=20000)
+    parser.add_argument("--repeats", type=int, default=3)
+    parser.add_argument("--eps", type=float, default=0.0)
+    args = parser.parse_args()
 
-    if args.mode == "iso3d":
-        run_iso3d(M=args.M, eps=args.eps, repeats=args.repeats, scale=args.scale)
-    elif args.mode == "equator":
-        run_equator()
+    run_chsh(mode=args.mode, M=args.M, repeats=args.repeats, eps=args.eps)
 
 
 
