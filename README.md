@@ -48,10 +48,56 @@ bp = np.array([1/np.sqrt(2), -1/np.sqrt(2), 0])
 S = chsh_value([a, ap, b, bp], eps=0.0, M=20000, mode="equator")
 print("CHSH value:", S)
 ```
----
-## Benchmarks
+## Examples
 
-We provide a simple CHSH benchmark to compare **OIR** against the **quantum mechanical (QM) baseline**.
+### CHSH (single run)
+Run a single CHSH computation with OIR and print both raw and rescaled (QM units) values.
+
+```bash
+python -m examples.chsh_test
+
+Example output:
+
+S_raw = 0.676842
+S_rescaled = 2.707368 (QM units)
+```
+### CHSH (full S from four correlators)
+
+Compute all four correlators and assemble CHSH S; print raw and rescaled.
+
+python -m examples.chsh_s
+
+Example output:
+
+CHSH test (OIR kernel)
+E(a,b) = 0.338921
+E(a,b') = 0.341057
+E(a',b) = 0.339874
+E(a',b') = 0.336997
+----------------------------------------
+S_raw = 0.678855
+S_rescaled = 2.715418 (QM units)
+
+
+---
+### GHZ (3-party correlator)
+
+Compute a 3-point GHZ-style correlator and print raw and rescaled values.
+
+python -m examples.ghz_test
+
+Example output:
+
+GHZ test (OIR kernel)
+Axes: [1. 0. 0.], [-0.5 0.8660254 0. ], [-0.5 -0.8660254 0. ]
+----------------------------------------
+E_raw = 0.679102
+E_rescaled = 2.716408 (QM units)
+
+---
+### CHSH (benchmark with repeats & timing)
+
+Compare OIR (iso3d) vs QM baseline (equator). Shows 3 runs with per-run timing, and mean ± std; prints raw and rescaled S.
 
 Run the benchmark from the repository root:
 
@@ -59,6 +105,7 @@ Run the benchmark from the repository root:
 python -m examples.bench_chsh --mode equator # QM (theoretical baseline)
 python -m examples.bench_chsh --mode iso3d # OIR Monte Carlo
 
+Example output (iso3d):
 Mode: iso3d (OIR Monte Carlo)
 M = 20000, repeats = 3
 
