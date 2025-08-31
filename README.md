@@ -72,13 +72,17 @@ time = 0.000s
 ```
 ## Scaling note
 
-The raw OIR kernel produces correlators with a natural range different from the QM formalism.
+The raw OIR kernel produces correlators in the correct range **[-1, 1]**,  
+so for direct correlators *E(a,b)* no rescaling is required.
 
-Therefore, its CHSH score is around S ≈ 0.67 by default.
+However, when comparing **inequality-type quantities** (e.g. CHSH S-value, GHZ/Mermin functionals)  
+against standard quantum mechanical conventions, a factor ×4 is applied:
 
-For visual comparison with QM, one may introduce a rescaling factor (×4), giving a value close to the Tsirelson bound (2\sqrt{2} \approx 2.828).
+- **CHSH**: raw OIR gives S ≈ 0.67 → rescaled ×4 → ≈ 2.8 (close to Tsirelson bound 2√2).  
+- **GHZ/Mermin**: raw OIR gives value ≈ 1 → rescaled ×4 → ≈ 4 (QM maximum).  
+- **Direct correlators E(a,b)**: already normalized to [-1,1], no scaling needed.
 
-This rescaling is not part of the physics, only a way to align units when comparing with QM conventions.
+This rescaling is **not part of the physics**, only a convention to align OIR outputs with QM-style benchmarks.
 
 ---
 
