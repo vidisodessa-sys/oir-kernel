@@ -194,7 +194,9 @@ BibTeX:
 ---
 
 ## License
-Article text: CC BY 4.0
-OIR computational kernel: Non-commercial research use only.
-Any commercial or industrial use requires explicit written permission from the author.
+
+- **Article text**: CC BY 4.0 with an additional restriction — any commercial or industrial use requires explicit written permission from the author.  
+- **OIR computational kernel (code)**: CC BY-NC 4.0 (non-commercial research and educational use only).  
+Any use by for-profit entities (including internal company research) requires **prior written permission**.  
+
 Copyright © 2025 Vitalii Bakhariev. All rights reserved.
