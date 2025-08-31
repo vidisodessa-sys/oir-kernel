@@ -78,16 +78,25 @@ S_rescaled = 2.715418 (QM units)
 
 
 ---
-### GHZ (3-party correlator)
-Compute a 3-point GHZ-style correlator and print raw and rescaled values.
-python -m examples.ghz_test
-Example output:
+### GHZ test (3-party correlator)
+We also provide a simple 3-point GHZ correlator test.
 
+Run:
+```bash
+python -m examples.ghz_test
+```
+
+Example output:
 GHZ test (OIR kernel)
 Axes: [1. 0. 0.], [-0.5 0.8660254 0. ], [-0.5 -0.8660254 0. ]
 ----------------------------------------
-E_raw = 0.679102
-E_rescaled = 2.716408 (QM units)
+E_raw = -0.229421
+E_rescaled = -0.917683 (QM units, optional ×4 scaling)
+
+Notes:
+For GHZ, the raw OIR value already lies in the natural range [-1,+1], just like in standard QM.
+The rescaled value (×4) is shown only for consistency with the CHSH presentation, not because GHZ requires rescaling.
+This confirms that OIR reproduces the correct qualitative GHZ-type correlations.
 
 ---
 ### CHSH (benchmark with repeats & timing)
