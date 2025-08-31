@@ -51,15 +51,36 @@ print("CHSH value:", S)
 ---
 ## Benchmarks
 
-You can run the benchmark script:
+We provide a simple CHSH benchmark to compare **OIR** against the **quantum mechanical (QM) baseline**.
 
-python -m examples.bench_chsh --M 20000 --eps 0.0 --repeats 3
-Expected results:
-mode="iso3d" → S ≈ 0.67 (baseline isotropic sampling)
-mode="equator" → S ≈ 2.82 (Tsirelson bound, same as standard QM at ε=0)
-This confirms that OIR reproduces the quantum predictions, while allowing controlled anisotropic modulation (ε ≠ 0).
+Run the benchmark from the repository root:
 
+```bash
+python -m examples.bench_chsh --mode equator # QM (theoretical baseline)
+python -m examples.bench_chsh --mode iso3d # OIR Monte Carlo
 
+Example results
+
+Mode: iso3d (OIR Monte Carlo)
+M = 20000, repeats = 3
+S ≈ 0.67 ± 0.01
+time ≈ 4s per run
+
+Mode: equator (QM baseline)
+S (theory) = 2.828427
+time = 0.000s
+```
+## Scaling note
+
+The raw OIR kernel produces correlators with a natural range different from the QM formalism.
+
+Therefore, its CHSH score is around S ≈ 0.67 by default.
+
+For visual comparison with QM, one may introduce a rescaling factor (×4), giving a value close to the Tsirelson bound (2\sqrt{2} \approx 2.828).
+
+This rescaling is not part of the physics, only a way to align units when comparing with QM conventions.
+
+---
 
 ## Command-line (CLI)
 After `pip install -e .`, a command `oir` is available:
