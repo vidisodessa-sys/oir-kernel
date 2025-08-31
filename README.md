@@ -50,7 +50,7 @@ print("CHSH value:", S)
 ```
 ## Examples
 
-### CHSH (single run)
+## CHSH (single run)
 Run a single CHSH computation with OIR and print both raw and rescaled (QM units) values.
 
 ```bash
@@ -60,7 +60,7 @@ Example output:
 S_raw = 0.676842
 S_rescaled = 2.707368 (QM units)
 
-### CHSH (full S from four correlators)
+## CHSH (full S from four correlators)
 Compute all four correlators and assemble CHSH S; print raw and rescaled.
 ```bash
 python -m examples.chsh_s
@@ -77,7 +77,7 @@ S_rescaled = 2.715418 (QM units)
 
 
 ---
-### GHZ test (3-party correlator)
+## GHZ test (3-party correlator)
 We also provide a simple 3-point GHZ correlator test.
 
 Run:
