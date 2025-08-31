@@ -109,6 +109,7 @@ python -m examples.bench_chsh --mode equator # QM (theoretical baseline)
 python -m examples.bench_chsh --mode iso3d # OIR Monte Carlo
 ```
 Example output (iso3d):
+```bash
 Mode: iso3d (OIR Monte Carlo)
 M = 20000, repeats = 3
 
@@ -121,9 +122,9 @@ S_rescaled mean = 2.707022 (std 0.009966)
 avg time ≈ 3.94s per run
 
 Mode: equator (QM baseline)
-
 S (theory) = 2.828427  
 time = 0.000s
+```
 
 ## Scaling note
 
