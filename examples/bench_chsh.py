@@ -10,7 +10,7 @@
 
 import time
 import numpy as np
-from src.oir.core import oir_pair_correlator
+from oir import oir_pair_correlator
 
 def run_chsh(mode="iso3d", M=20000, repeats=3, eps=0.0):
     """
