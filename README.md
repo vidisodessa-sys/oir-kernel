@@ -183,7 +183,11 @@ BibTeX:
 ---
 
 ## Roadmap
-- GHZ examples and benchmarks (equatorial presets, ε-modulation) — planned for v0.2.
+**Mermin inequality** (generalization of GHZ to 3+ parties)  
+**Quantum Fourier Transform (QFT) demo** (phase-structured correlations)  
+**Grover search (toy version)** (amplitude amplification with OIR)  
+**Shor period finding (mini-demo)** (small-N factorization case)  
+**Noise/robustness tests** (OIR stability under perturbations)  
   
 ---
 
