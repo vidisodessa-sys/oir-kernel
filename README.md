@@ -64,9 +64,7 @@ S_rescaled = 2.707368 (QM units)
 ### CHSH (full S from four correlators)
 
 Compute all four correlators and assemble CHSH S; print raw and rescaled.
-
 python -m examples.chsh_s
-
 Example output:
 
 CHSH test (OIR kernel)
@@ -81,11 +79,8 @@ S_rescaled = 2.715418 (QM units)
 
 ---
 ### GHZ (3-party correlator)
-
 Compute a 3-point GHZ-style correlator and print raw and rescaled values.
-
 python -m examples.ghz_test
-
 Example output:
 
 GHZ test (OIR kernel)
@@ -96,9 +91,7 @@ E_rescaled = 2.716408 (QM units)
 
 ---
 ### CHSH (benchmark with repeats & timing)
-
 Compare OIR (iso3d) vs QM baseline (equator). Shows 3 runs with per-run timing, and mean ± std; prints raw and rescaled S.
-
 Run the benchmark from the repository root:
 
 ```bash
