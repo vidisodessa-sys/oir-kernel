@@ -1,22 +1,24 @@
 import numpy as np
-from oir import oir_correlator
+from oir import oir_pair_correlator
 
-"""
-Example: CHSH correlator using the Orientation Integral Rule (OIR).
+def chsh_value(axes, eps=0.0, M=10000):
+    a, ap, b, bp = axes
+    Eab = oir_pair_correlator(a, b, eps, M)
+    Eabp = oir_pair_correlator(a, bp, eps, M)
+    Eapb = oir_pair_correlator(ap, b, eps, M)
+    Eapbp= oir_pair_correlator(ap, bp, eps, M)
+    S_raw = abs(Eab + Eabp + Eapb - Eapbp)
+    return S_raw
 
-This script demonstrates how to compute the CHSH value
-with four analyzer directions.
-"""
+if __name__ == "__main__":
+    # standard CHSH axes
+    a = np.array([1,0,0])
+    ap = np.array([0,1,0])
+    b = np.array([1/np.sqrt(2), 1/np.sqrt(2), 0])
+    bp = np.array([1/np.sqrt(2),-1/np.sqrt(2), 0])
 
-# 4 analyzer directions (unit vectors)
-axes = [
-    np.array([1,0,0]),
-    np.array([0,1,0]),
-    np.array([1/np.sqrt(2),1/np.sqrt(2),0]),
-    np.array([1/np.sqrt(2),-1/np.sqrt(2),0])
-]
+    S_raw = chsh_value([a, ap, b, bp], eps=0.0, M=20000)
+    S_rescaled = 4 * S_raw # QM convention
 
-# Run OIR correlator
-value = oir_correlator(axes, eps=0.0, M=100000)
-
-print("CHSH correlator:", value)
+    print(f"S_raw = {S_raw:.6f}")
+    print(f"S_rescaled = {S_rescaled:.6f} (QM units)")
